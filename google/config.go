@@ -16,6 +16,7 @@ import (
 	"golang.org/x/oauth2/jwt"
 	"google.golang.org/api/bigquery/v2"
 	"google.golang.org/api/cloudbilling/v1"
+	"google.golang.org/api/cloudfunctions/v1beta2"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/container/v1"
@@ -38,6 +39,7 @@ type Config struct {
 	clientCompute         *compute.Service
 	clientContainer       *container.Service
 	clientDns             *dns.Service
+	clientFunctions       *cloudfunctions.Service
 	clientPubsub          *pubsub.Service
 	clientResourceManager *cloudresourcemanager.Service
 	clientStorage         *storage.Service
@@ -124,6 +126,13 @@ func (c *Config) loadAndValidate() error {
 		return err
 	}
 	c.clientDns.UserAgent = userAgent
+
+	log.Printf("[INFO] Instantiating Google Cloud Functions client...")
+	c.clientFunctions, err = cloudfunctions.New(client)
+	if err != nil {
+		return err
+	}
+	c.clientFunctions.UserAgent = userAgent
 
 	log.Printf("[INFO] Instantiating Google Storage Client...")
 	c.clientStorage, err = storage.New(client)
