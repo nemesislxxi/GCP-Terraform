@@ -803,6 +803,12 @@
 			"revisionTime": "2016-11-21T18:05:46Z"
 		},
 		{
+			"checksumSHA1": "wf+psP1Gf4BqqHPPJ9McOecx4Zk=",
+			"path": "google.golang.org/api/cloudfunctions/v1beta2",
+			"revision": "c858ef4400610cbfd097ffc5f5c6e4a1a51eac86",
+			"revisionTime": "2017-05-10T18:14:49Z"
+		},
+		{
 			"checksumSHA1": "SIsWfZXQERRErpy9TD1ETop72uU=",
 			"path": "google.golang.org/api/cloudresourcemanager/v1",
 			"revision": "3cc2e591b550923a2c5f0ab5a803feda924d5823",
