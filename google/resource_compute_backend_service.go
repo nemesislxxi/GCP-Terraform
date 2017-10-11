@@ -44,7 +44,7 @@ func resourceComputeBackendService() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"group": &schema.Schema{
 							Type:             schema.TypeString,
-							Required:         true,
+							Optional:         true,
 							DiffSuppressFunc: compareSelfLinkRelativePaths,
 						},
 						"balancing_mode": &schema.Schema{
