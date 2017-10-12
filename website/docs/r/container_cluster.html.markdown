@@ -14,7 +14,7 @@ and
 [API](https://cloud.google.com/container-engine/reference/rest/v1/projects.zones.clusters).
 
 !> **Warning:** Due to limitations of the API, all arguments except
-`node_version` are non-updateable. Changing any will cause recreation of the
+`node_version` and `min_master_version` are non-updateable. Changing any will cause recreation of the
 whole cluster!
 
 ~> **Note:** All arguments including the username and password will be stored in the raw state as plain-text.
@@ -97,6 +97,12 @@ resource "google_container_cluster" "primary" {
     this cluster
 
 * `node_pool` - (Optional) List of node pools associated with this cluster.
+
+* `min_master_version` - (Optional) The minimum version of the master. GKE
+  can auto-update the master to new versions, so this does not guarantee the
+  current master version--use the read-only `master_version` field to obtain that.
+  Defaults to the default version set by GKE which is not necessarily the latest
+  version.
 
 * `node_version` - (Optional) The Kubernetes version on the nodes. Also affects
     the initial master version on cluster creation. Updates affect nodes only.
@@ -199,6 +205,10 @@ exported:
 
 * `instance_group_urls` - List of instance group URLs which have been assigned
     to the cluster
+
+* `master_version` - The current version of the master in the cluster, which may
+    be different than the `min_master_version` set in the config, if the master
+    has been updated by GKE.
 
 * `master_auth.client_certificate` - Base64 encoded public certificate
     used by clients to authenticate to the cluster endpoint.
