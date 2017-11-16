@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"google.golang.org/api/dns/v1"
+	"strings"
 )
 
 func resourceDnsRecordSet() *schema.Resource {
@@ -14,6 +15,9 @@ func resourceDnsRecordSet() *schema.Resource {
 		Read:   resourceDnsRecordSetRead,
 		Delete: resourceDnsRecordSetDelete,
 		Update: resourceDnsRecordSetUpdate,
+		Importer: &schema.ResourceImporter{
+			State: resourceDnsRecordSetImportState,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"managed_zone": &schema.Schema{
@@ -155,6 +159,7 @@ func resourceDnsRecordSetRead(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("Only expected 1 record set, got %d", len(resp.Rrsets))
 	}
 
+	d.Set("type", resp.Rrsets[0].Type)
 	d.Set("ttl", resp.Rrsets[0].Ttl)
 	d.Set("rrdatas", resp.Rrsets[0].Rrdatas)
 
@@ -270,6 +275,19 @@ func resourceDnsRecordSetUpdate(d *schema.ResourceData, meta interface{}) error 
 	}
 
 	return resourceDnsRecordSetRead(d, meta)
+}
+
+func resourceDnsRecordSetImportState(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	parts := strings.Split(d.Id(), "/")
+	if len(parts) != 3 {
+		return nil, fmt.Errorf("Invalid dns record specifier. Expecting {project}/{zone name}/{record name}/{record type}")
+	}
+
+	d.Set("managed_zone", parts[0])
+	d.Set("name", parts[1])
+	d.Set("type", parts[2])
+
+	return []*schema.ResourceData{d}, nil
 }
 
 func rrdata(
